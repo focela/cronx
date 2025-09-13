@@ -102,7 +102,7 @@ func stop(c *cron.Cron, wg *sync.WaitGroup) {
 // scheduler, and handles graceful shutdown on SIGINT or SIGTERM signals.
 func main() {
 	if len(os.Args) < minArgs {
-		fmt.Println("Usage: go-cron [schedule] [command] [args ...]")
+		fmt.Println("Usage: cronx [schedule] [command] [args ...]")
 		os.Exit(1)
 	}
 
