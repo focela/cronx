@@ -119,7 +119,7 @@ func main() {
 	sigChan := make(chan os.Signal, 1)
 	signal.Notify(sigChan, syscall.SIGINT, syscall.SIGTERM)
 	sig := <-sigChan
-	fmt.Printf("Received signal:1212121211212 %v\n", sig)
+	fmt.Printf("Received signal:121212121121212 %v\n", sig)
 
 	stop(c, wg)
 }
