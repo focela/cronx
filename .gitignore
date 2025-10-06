@@ -1,0 +1,316 @@
+#-----------------------------------------------------------------------------
+# Git Ignore Configuration
+#
+# Function: Excludes system files, build artifacts, and sensitive data
+# Assumption: Mixed OS environments and multiple IDEs in use
+# Consequence: Prevents repository bloat and accidental secret exposure
+#-----------------------------------------------------------------------------
+
+
+
+#-----------------------------------------------------------------------------
+# OPERATING SYSTEM FILES
+#-----------------------------------------------------------------------------
+# macOS system files that auto-generate during file operations
+._*
+.apdisk
+.AppleDB
+.AppleDesktop
+.AppleDouble
+.com.apple.timemachine.donotpresent
+.DocumentRevisions-V100
+.DS_Store
+.fseventsd
+.LSOverride
+.Spotlight-V100
+.TemporaryItems
+.Trashes
+.VolumeIcon.icns
+Icon
+Network Trash Folder
+Temporary Items
+
+# Windows thumbnail cache files
+$RECYCLE.BIN/
+Desktop.ini
+ehthumbs.db
+Thumbs.db
+
+# Linux temporary files
+*~
+.directory
+.fuse_hidden*
+.nfs*
+.Trash-*
+
+#-----------------------------------------------------------------------------
+# IDE AND EDITOR FILES
+#-----------------------------------------------------------------------------
+# Atom editor configuration files
+.ftpconfig
+.sftpconfig
+
+# Emacs editor temporary and backup files
+.\#*
+\#*\#
+*.elc
+/.emacs.desktop
+/.emacs.desktop.lock
+auto-save-list
+tramp
+
+# IntelliJ IDEA and JetBrains IDE configuration files
+*.iml
+*.ipr
+*.iws
+.history/
+.idea/
+.idea/$CACHE_FILE$
+.idea/**/aws.xml
+.idea/**/azureSettings.xml
+.idea/**/codestream.xml
+.idea/**/contentModel.xml
+.idea/**/dbnavigator.xml
+.idea/**/dictionaries
+.idea/**/dynamic.xml
+.idea/**/gradle.xml
+.idea/**/httpRequests
+.idea/**/libraries
+.idea/**/markdown-navigator/
+.idea/**/mongoSettings.xml
+.idea/**/shelf
+.idea/**/sonarIssues.xml
+.idea/**/sonarlint/
+.idea/**/sqlDataSources.xml
+.idea/**/tasks.xml
+.idea/**/uiDesigner.xml
+.idea/**/usage.statistics.xml
+.idea/**/workspace.xml
+.idea/caches/build_file_checksums.ser
+.idea/misc.xml
+.idea/replstate.xml
+.idea_modules/
+modules.xml
+out/
+
+# PhpStorm metadata and configuration files
+.phpstorm.meta.php
+.phpstorm.meta.php/
+
+# Sublime Text project and workspace files
+*.sublime-project
+*.sublime-workspace
+
+# Vim and Neovim session and history files
+.netrwhist
+Session.vim
+
+# VS Code configs with selective inclusion
+.vscode/
+!.vscode/extensions.json
+!.vscode/launch.json
+!.vscode/settings.json
+!.vscode/tasks.json
+
+#-----------------------------------------------------------------------------
+# THIRD-PARTY PLUGIN FILES
+#-----------------------------------------------------------------------------
+# Third-party tool configs that may contain API keys or preferences
+atlassian-ide-plugin.xml
+com_crashlytics_export_strings.xml
+crashlytics-build.properties
+crashlytics.properties
+fabric.properties
+
+#-----------------------------------------------------------------------------
+# SECURITY AND CONFIGURATION
+#-----------------------------------------------------------------------------
+# Environment files with sensitive data
+.env
+.env.*.local
+.env.development
+.env.local
+.env.production
+.env.staging
+
+# Files containing secrets that must not be committed
+*.crt
+*.key
+*.p12
+*.pem
+*.pfx
+.well-known/
+credentials/
+secrets/
+
+#-----------------------------------------------------------------------------
+# LOGS AND TEMPORARY FILES
+#-----------------------------------------------------------------------------
+# Runtime files that grow large and change frequently
+*.log
+*.temp
+*.tmp
+log/
+logs/
+
+#-----------------------------------------------------------------------------
+# CONTAINER AND ORCHESTRATION
+#-----------------------------------------------------------------------------
+# Container configs that may contain sensitive cluster information
+.kube/
+
+# Docker development configuration files
+Dockerfile.dev
+docker-compose.override.yml
+
+# Terraform infrastructure configuration and state files
+*.tfstate
+*.tfstate.*
+.terraform/
+.terraform.lock.hcl
+.terraformrc
+terraform.rc
+
+#-----------------------------------------------------------------------------
+# BUILD ARTIFACTS AND RUNTIME FILES
+#-----------------------------------------------------------------------------
+# Backup and version control files
+*.backup
+*.bak
+*.old
+*.orig
+
+# Compiled application files
+*.ear
+*.jar
+*.nar
+*.rar
+*.war
+*.zip
+
+# Virtual machine crash logs and replay files
+hs_err_pid*
+replay_pid*
+
+#-----------------------------------------------------------------------------
+# DATABASE FILES
+#-----------------------------------------------------------------------------
+# Database files
+*.db
+*.sql
+*.sqlite
+*.sqlite3
+
+#-----------------------------------------------------------------------------
+# DEPENDENCIES AND ENVIRONMENTS
+#-----------------------------------------------------------------------------
+# Package manager dependencies
+bower_components/
+node_modules/
+vendor/
+
+# Virtual environments
+.env/
+.venv/
+env/
+venv/
+
+#-----------------------------------------------------------------------------
+# TESTING AND COVERAGE
+#-----------------------------------------------------------------------------
+# Test results and coverage reports
+*.lcov
+.coverage
+.nyc_output
+.pytest_cache/
+.tox/
+coverage/
+test-results/
+
+#-----------------------------------------------------------------------------
+# GO LANGUAGE FILES
+#-----------------------------------------------------------------------------
+# Go binary outputs that are regenerated and platform-specific
+*.dll
+*.dylib
+*.exe
+*.exe~
+*.so
+
+# Go test artifacts and coverage reports
+*.cover
+*.coverprofile
+*.out
+*.test
+coverage.html
+coverage.out
+coverage.txt
+coverage.xml
+junit.xml
+profile.cov
+
+# Go module management files that are auto-generated
+go.sum.bak
+go.work
+go.work.sum
+
+# Go profiling and debugging files
+*.block.prof
+*.cpu.prof
+*.mem.prof
+*.mutex.prof
+*.pprof
+*.prof
+*.trace
+__debug_bin
+.cache/go-build/
+debug
+debug.test
+
+# Go development tools and hot reload
+*.pid
+*.sock
+.air/
+.air.conf
+.air.toml
+.realize/
+
+# Go build directories and outputs
+.tmp/
+/bin/
+/build/
+/dist/
+/out/
+/output/
+/pkg/
+tmp/
+
+# Go generated code files
+*_gen.go
+*_generated.go
+*.pb.go
+*.pb.gw.go
+wire_gen.go
+zz_generated.*.go
+
+# Go mock files for testing
+*_mock.go
+**/mocks/
+mock_*.go
+
+# Go private module authentication
+.netrc
+
+# Go workspace and legacy GOPATH (pre-1.11 modules)
+# Note: Modern Go projects use modules; these are for backward compatibility
+$GOPATH/bin/
+$GOPATH/pkg/mod/
+$GOPATH/src/
+
+# Go documentation and examples
+*.godoc
+
+# Go benchmarking results
+*.bench
+*.benchmarks
+benchmarks/
