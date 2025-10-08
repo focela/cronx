@@ -1,0 +1,167 @@
+version: 2
+
+project_name: cronx
+
+before:
+  hooks:
+    - go mod tidy
+    - go mod download
+
+builds:
+  - id: cronx
+    binary: cronx
+    main: ./cronx.go
+    goos:
+      - linux
+      - windows
+      - darwin
+      - freebsd
+    goarch:
+      - amd64
+      - arm64
+      - arm
+    goarm:
+      - "6"
+      - "7"
+    ignore:
+      - goos: darwin
+        goarch: arm
+      - goos: windows
+        goarch: arm
+      - goos: windows
+        goarch: arm64
+      - goos: freebsd
+        goarch: arm64
+    ldflags:
+      - -s -w
+      - -X main.version={{.Version}}
+      - -X main.commit={{.Commit}}
+      - -X main.date={{.Date}}
+      - -X main.builtBy=goreleaser
+    flags:
+      - -trimpath
+    env:
+      - CGO_ENABLED=0
+    mod_timestamp: "{{ .CommitTimestamp }}"
+
+universal_binaries:
+  - id: cronx
+    replace: true
+    name_template: "cronx"
+    ids:
+      - cronx
+
+archives:
+  - name_template: >-
+      {{ .ProjectName }}_
+      {{- title .Os }}_
+      {{- if eq .Arch "amd64" }}x86_64
+      {{- else if eq .Arch "386" }}i386
+      {{- else }}{{ .Arch }}{{ end }}
+      {{- if .Arm }}v{{ .Arm }}{{ end }}
+    wrap_in_directory: true
+    files:
+      - README.md
+      - LICENSE
+      - CONTRIBUTING.md
+      - CODE_OF_CONDUCT.md
+
+checksum:
+  name_template: "{{ .ProjectName }}_{{ .Version }}_checksums.txt"
+  algorithm: sha256
+
+sboms:
+  - artifacts: archive
+    documents:
+      - "{{ .ProjectName }}_{{ .Version }}_sbom.spdx.json"
+
+changelog:
+  use: github
+  sort: asc
+  abbrev: 7
+  groups:
+    - title: Features
+      regexp: "^.*feat[(\\w)]*:+.*$"
+      order: 0
+    - title: "Bug fixes"
+      regexp: "^.*fix[(\\w)]*:+.*$"
+      order: 1
+    - title: "Enhancements"
+      regexp: "^.*chore[(\\w)]*:+.*$"
+      order: 2
+    - title: "Refactor"
+      regexp: "^.*refactor[(\\w)]*:+.*$"
+      order: 3
+    - title: "Build process updates"
+      regexp: ^.*?(build|ci)(\(.+\))??!?:.+$
+      order: 4
+    - title: "Documentation updates"
+      regexp: ^.*?docs?(\(.+\))??!?:.+$
+      order: 5
+    - title: Others
+      order: 999
+  filters:
+    exclude:
+      - "^test:"
+      - "^chore(deps):"
+      - "^style:"
+      - Merge pull request
+      - Merge branch
+      - go mod tidy
+
+release:
+  github:
+    owner: focela
+    name: cronx
+  draft: false
+  prerelease: auto
+  mode: append
+  name_template: "{{ .ProjectName }} {{ .Tag }}"
+  header: |
+    ## Installation
+    
+    ### Linux (AMD64)
+    
+    ```bash
+    wget https://github.com/focela/cronx/releases/download/{{ .Tag }}/cronx_Linux_x86_64.tar.gz
+    tar -xzf cronx_Linux_x86_64.tar.gz
+    sudo mv cronx /usr/local/bin/
+    ```
+    
+    ### macOS (Intel)
+    
+    ```bash
+    wget https://github.com/focela/cronx/releases/download/{{ .Tag }}/cronx_Darwin_x86_64.tar.gz
+    tar -xzf cronx_Darwin_x86_64.tar.gz
+    sudo mv cronx /usr/local/bin/
+    ```
+    
+    ### macOS (Apple Silicon)
+    
+    ```bash
+    wget https://github.com/focela/cronx/releases/download/{{ .Tag }}/cronx_Darwin_all.tar.gz
+    tar -xzf cronx_Darwin_all.tar.gz
+    sudo mv cronx /usr/local/bin/
+    ```
+    
+    ### Windows (AMD64)
+    
+    Download `cronx_Windows_x86_64.zip`, extract, and add to PATH.
+    
+  footer: |
+    ## Changelog
+    
+    https://github.com/focela/cronx/compare/{{ .PreviousTag }}...{{ .Tag }}
+    
+    ## Checksums
+    
+    SHA256: `{{ .ProjectName }}_{{ .Version }}_checksums.txt`
+    
+    SBOM: `{{ .ProjectName }}_{{ .Version }}_sbom.spdx.json`
+    
+    ## Issues
+    
+    https://github.com/focela/cronx/issues/new
+
+announce:
+  skip: "{{gt .Patch 0}}"
