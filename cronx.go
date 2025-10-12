@@ -21,8 +21,18 @@ import (
 	"github.com/robfig/cron/v3"
 )
 
+var (
+	// version is set by ldflags during build.
+	version = "dev"
+	// commit is the git commit hash set by ldflags.
+	commit = "none"
+	// date is the build date set by ldflags.
+	date = "unknown"
+	// builtBy is set by ldflags during build.
+	builtBy = "unknown"
+)
+
 const (
-	// minArgs is the minimum required command-line arguments.
 	minArgs = 3
 )
 
@@ -83,8 +93,17 @@ func stop(c *cron.Cron, wg *sync.WaitGroup) {
 
 // main parses arguments and runs cron scheduler with signal handling.
 func main() {
+	if len(os.Args) == 2 && os.Args[1] == "version" {
+		fmt.Printf("cronx version %s\n", version)
+		fmt.Printf("commit: %s\n", commit)
+		fmt.Printf("built: %s\n", date)
+		fmt.Printf("built by: %s\n", builtBy)
+		return
+	}
+
 	if len(os.Args) < minArgs {
 		fmt.Println("Usage: cronx [schedule] [command] [args ...]")
+		fmt.Println("       cronx version")
 		os.Exit(1)
 	}
 
