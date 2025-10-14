@@ -13,6 +13,7 @@
 
 ### Bug fixes
 
+* fix(ci): update Go version to 1.25.1 in workflow (#6) (@trants)
 * fix(ci): handle universal binary naming (#3) (@trants)
 
 ### Build process
