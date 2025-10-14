@@ -11,10 +11,10 @@ package main
 import (
 	"context"
 	"fmt"
+	"log/slog"
 	"os"
 	"os/exec"
 	"os/signal"
-	"strings"
 	"sync"
 	"syscall"
 
@@ -30,6 +30,11 @@ var (
 	date = "unknown"
 	// builtBy is set by ldflags during build.
 	builtBy = "unknown"
+
+	// logger provides structured logging throughout the application.
+	logger = slog.New(slog.NewJSONHandler(os.Stdout, &slog.HandlerOptions{
+		Level: slog.LevelInfo,
+	}))
 )
 
 const (
@@ -37,20 +42,21 @@ const (
 )
 
 // execute runs command with args, redirecting stdout/stderr.
-func execute(command string, args []string) {
-	fmt.Printf("executing: %s %s\n", command, strings.Join(args, " "))
+func execute(command string, args []string) error {
+	logger.Info("executing command", "command", command, "args", args)
 
 	cmd := exec.Command(command, args...)
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
 
 	if err := cmd.Run(); err != nil {
-		fmt.Printf("command failed: %v\n", err)
+		return fmt.Errorf("command execution failed: %w", err)
 	}
+	return nil
 }
 
 // create initializes cron scheduler that respects ctx cancellation.
-func create(ctx context.Context, schedule string, command string, args []string) (*cron.Cron, *sync.WaitGroup) {
+func create(ctx context.Context, schedule string, command string, args []string) (*cron.Cron, *sync.WaitGroup, error) {
 	wg := &sync.WaitGroup{}
 
 	// Supports optional seconds and descriptors (@daily, @weekly).
@@ -59,12 +65,11 @@ func create(ctx context.Context, schedule string, command string, args []string)
 	)
 
 	if _, err := parser.Parse(schedule); err != nil {
-		fmt.Printf("invalid schedule: %v\n", err)
-		os.Exit(1)
+		return nil, nil, fmt.Errorf("invalid schedule '%s': %w", schedule, err)
 	}
 
 	c := cron.New(cron.WithParser(parser))
-	fmt.Printf("new cron: %s\n", schedule)
+	logger.Info("new cron scheduled", "schedule", schedule)
 
 	c.AddFunc(schedule, func() {
 		wg.Add(1)
@@ -74,30 +79,36 @@ func create(ctx context.Context, schedule string, command string, args []string)
 		case <-ctx.Done():
 			return
 		default:
-			execute(command, args)
+			if err := execute(command, args); err != nil {
+				logger.Error("command execution error", "error", err)
+			}
 		}
 	})
 
-	return c, wg
+	return c, wg, nil
 }
 
 // stop shuts down scheduler and waits for running jobs to complete.
 func stop(c *cron.Cron, wg *sync.WaitGroup) {
-	fmt.Println("Stopping")
+	logger.Info("stopping scheduler")
 	c.Stop()
-	fmt.Println("Waiting for running jobs to complete")
+	logger.Info("waiting for running jobs to complete")
 	wg.Wait()
-	fmt.Println("Exiting")
-	os.Exit(0)
+	logger.Info("scheduler stopped successfully")
+}
+
+// showVersion displays version information to stdout.
+func showVersion() {
+	fmt.Printf("cronx version %s\n", version)
+	fmt.Printf("commit: %s\n", commit)
+	fmt.Printf("built: %s\n", date)
+	fmt.Printf("built by: %s\n", builtBy)
 }
 
 // main parses arguments and runs cron scheduler with signal handling.
 func main() {
-	if len(os.Args) == 2 && os.Args[1] == "version" {
-		fmt.Printf("cronx version %s\n", version)
-		fmt.Printf("commit: %s\n", commit)
-		fmt.Printf("built: %s\n", date)
-		fmt.Printf("built by: %s\n", builtBy)
+	if len(os.Args) >= 2 && os.Args[1] == "version" {
+		showVersion()
 		return
 	}
 
@@ -114,15 +125,20 @@ func main() {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
-	c, wg := create(ctx, schedule, command, args)
+	c, wg, err := create(ctx, schedule, command, args)
+	if err != nil {
+		logger.Error("failed to create scheduler", "error", err)
+		os.Exit(1)
+	}
 
 	c.Start()
 
 	sigChan := make(chan os.Signal, 1)
 	signal.Notify(sigChan, syscall.SIGINT, syscall.SIGTERM)
 	sig := <-sigChan
-	fmt.Printf("Received signal: %v\n", sig)
+	logger.Info("received signal", "signal", sig)
 
 	cancel()
 	stop(c, wg)
+	os.Exit(0)
 }
