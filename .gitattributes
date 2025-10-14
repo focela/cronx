@@ -1,0 +1,48 @@
+#-----------------------------------------------------------------------------
+# Git Attributes Configuration
+#
+# Function: Ensures consistent line endings and file handling across platforms
+# Assumption: Mixed OS environments (Linux, macOS, Windows)
+# Consequence: Prevents line ending conflicts and ensures proper binary handling
+#-----------------------------------------------------------------------------
+
+
+
+#-----------------------------------------------------------------------------
+# TEXT FILES - LINE ENDING NORMALIZATION
+#-----------------------------------------------------------------------------
+# Normalize line endings to LF on all platforms
+* text=auto eol=lf
+
+#-----------------------------------------------------------------------------
+# SOURCE FILES
+#-----------------------------------------------------------------------------
+# Go source files
+*.go text eol=lf
+
+# Markdown documentation files
+*.md text eol=lf
+
+# Shell scripts
+*.sh text eol=lf
+
+# YAML configuration files
+*.yaml text eol=lf
+*.yml text eol=lf
+
+#-----------------------------------------------------------------------------
+# WINDOWS-SPECIFIC FILES
+#-----------------------------------------------------------------------------
+# Windows scripts require CRLF line endings
+*.bat text eol=crlf
+*.cmd text eol=crlf
+*.ps1 text eol=crlf
+
+#-----------------------------------------------------------------------------
+# BINARY FILES
+#-----------------------------------------------------------------------------
+# Binary files should not be modified
+*.exe binary
+*.tar.gz binary
+*.tgz binary
+*.zip binary

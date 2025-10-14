@@ -66,6 +66,7 @@ archives:
       - LICENSE
       - CONTRIBUTING.md
       - CODE_OF_CONDUCT.md
+      - CHANGELOG.md
 
 checksum:
   name_template: "{{ .ProjectName }}_{{ .Version }}_checksums.txt"
