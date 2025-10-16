@@ -18,6 +18,7 @@
 
 ### Build process
 
+* ci(release): remove SBOM generation (#8) (@trants)
 * ci(release): install syft for SBOM generation (#7) (@trants)
 * ci(release): add GoReleaser automation (#3) (@trants)
 

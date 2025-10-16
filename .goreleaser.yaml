@@ -72,11 +72,6 @@ checksum:
   name_template: "{{ .ProjectName }}_{{ .Version }}_checksums.txt"
   algorithm: sha256
 
-sboms:
-  - artifacts: archive
-    documents:
-      - "{{ .ProjectName }}_{{ .Version }}_sbom.spdx.json"
-
 changelog:
   use: github
   sort: asc
@@ -158,8 +153,6 @@ release:
     ## Checksums
     
     SHA256: `{{ .ProjectName }}_{{ .Version }}_checksums.txt`
-    
-    SBOM: `{{ .ProjectName }}_{{ .Version }}_sbom.spdx.json`
     
     ## Issues
     
